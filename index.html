@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI-INTERIOR | Smart Room Predictor & AI Redesign Studio</title>
+  <meta name="description" content="Upload any room image (Kitchen, Living Room, Bathroom, Bedroom) to predict room type and generate 5 stunning interior redesign variations powered by Hugging Face AI.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- Background Ambient Lights -->
+  <div class="ambient-light light-1"></div>
+  <div class="ambient-light light-2"></div>
+  <div class="ambient-light light-3"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo">
+        <i class="fa-solid fa-wand-magic-sparkles logo-icon"></i>
+        <div class="logo-text">
+          <span class="logo-title">AI-INTERIOR</span>
+          <span class="logo-subtitle">STUDIO</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="api-badge"><i class="fa-solid fa-brain"></i> PyTorch Classifier</span>
+        <span class="api-badge hf-badge"><i class="fa-solid fa-cubes"></i> Hugging Face HF</span>
+        <button id="btn-train-modal" class="btn-secondary" title="Retrain AI Classifier Model">
+          <i class="fa-solid fa-sliders"></i> Dataset & Model
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="main-container">
+
+    <!-- Hero Banner -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <span class="hero-pill"><i class="fa-solid fa-sparkles"></i> AI Interior Design & Architecture</span>
+        <h1 class="hero-title">Redesign Any Room in <span class="gradient-text">Seconds</span></h1>
+        <p class="hero-description">
+          Upload any room photo (Kitchen, Living Room, Bathroom, Bedroom). Our custom deep-learning model predicts the room type and generates <strong>4 personalized photorealistic Img2Img redesign variations</strong> preserving your room architecture.
+        </p>
+      </div>
+    </section>
+
+    <!-- App Workflow Grid -->
+    <div class="workflow-grid">
+      
+      <!-- STEP 1: Upload & Classification Panel -->
+      <section class="card upload-card">
+        <div class="card-header">
+          <div class="step-badge">1</div>
+          <h2>Upload Room Image</h2>
+        </div>
+        
+        <div id="dropzone" class="dropzone">
+          <input type="file" id="file-input" accept="image/*" class="file-input">
+          <div id="dropzone-content" class="dropzone-content">
+            <div class="upload-icon-wrapper">
+              <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+            </div>
+            <h3>Drag & Drop room image here</h3>
+            <p>Supports JPG, PNG, WEBP (Kitchen, Living Room, Bathroom, Bedroom)</p>
+            <button type="button" class="btn-browse" onclick="document.getElementById('file-input').click()">
+              <i class="fa-solid fa-folder-open"></i> Browse Files
+            </button>
+          </div>
+          
+          <!-- Image Preview Area -->
+          <div id="preview-container" class="preview-container hidden">
+            <img id="image-preview" src="" alt="Uploaded Room Preview">
+            <button id="btn-change-image" class="btn-change" title="Change Image">
+              <i class="fa-solid fa-rotate-right"></i> Replace Image
+            </button>
+          </div>
+        </div>
+
+        <!-- Room Prediction Result Box -->
+        <div id="prediction-box" class="prediction-box hidden">
+          <div class="prediction-header">
+            <span class="prediction-label"><i class="fa-solid fa-robot"></i> AI Room Prediction:</span>
+            <span id="predicted-room-badge" class="predicted-room-badge">Detecting...</span>
+          </div>
+
+          <!-- Confidence Scores Bars -->
+          <div class="confidence-bars" id="confidence-bars">
+            <!-- Dynamic Confidence Items inserted here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2: Style Selector Panel -->
+      <section class="card style-card">
+        <div class="card-header">
+          <div class="step-badge">2</div>
+          <h2>Select Redesign Style</h2>
+        </div>
+
+        <p class="section-hint">Choose an architectural aesthetic for your 4 generated redesigns:</p>
+
+        <div class="style-selector-grid">
+          <!-- Simple Style Card -->
+          <div class="style-option active" data-style="simple">
+            <div class="style-icon-box simple-theme">
+              <i class="fa-solid fa-leaf"></i>
+            </div>
+            <div class="style-info">
+              <h3>Simple</h3>
+              <p>Clean lines, Scandinavian aesthetic, light oak, airy uncluttered spaces.</p>
+            </div>
+            <div class="style-check"><i class="fa-solid fa-circle-check"></i></div>
+          </div>
+
+          <!-- Aesthetic Style Card -->
+          <div class="style-option" data-style="aesthetic">
+            <div class="style-icon-box rich-theme">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div class="style-info">
+              <h3>Aesthetic</h3>
+              <p>Japandi design, warm terracotta, limewash textures, rattan, artful decor.</p>
+            </div>
+            <div class="style-check"><i class="fa-solid fa-circle-check"></i></div>
+          </div>
+
+          <!-- Luxurious Style Card -->
+          <div class="style-option" data-style="luxurious">
+            <div class="style-icon-box luxury-theme">
+              <i class="fa-solid fa-crown"></i>
+            </div>
+            <div class="style-info">
+              <h3>Luxurious</h3>
+              <p>Calacatta marble, champagne brass, custom Italian furniture, chandeliers.</p>
+            </div>
+            <div class="style-check"><i class="fa-solid fa-circle-check"></i></div>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button id="btn-generate" class="btn-generate disabled" disabled>
+          <span class="btn-text"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate 4 Redesign Variations</span>
+          <div class="btn-loader spinner hidden"></div>
+        </button>
+      </section>
+
+    </div>
+
+    <!-- STEP 3: Redesign Results Section -->
+    <section id="results-section" class="results-section hidden">
+      <div class="results-header">
+        <div>
+          <span class="badge-tag" id="results-room-tag">Living Room</span>
+          <span class="badge-tag style-tag" id="results-style-tag">Luxurious Style</span>
+          <h2>AI Img2Img Redesign Gallery (4 Variations)</h2>
+          <p class="results-sub">Hugging Face AI has generated 4 distinct architecture-preserved redesign variations with 30-50% visible interior design changes. Click any image to view details, compare before/after, or download.</p>
+        </div>
+      </div>
+
+      <!-- Gallery Grid for 5 Images -->
+      <div id="gallery-grid" class="gallery-grid">
+        <!-- 5 Cards populated dynamically via script.js -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Before vs After Comparison / Fullscreen Image Viewer -->
+  <div id="modal-viewer" class="modal hidden">
+    <div class="modal-backdrop" id="modal-close-backdrop"></div>
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close-btn">&times;</button>
+      
+      <div class="modal-header">
+        <h3 id="modal-title">Redesign Variation #1</h3>
+        <p id="modal-subtitle" class="modal-subtitle">Style: Luxurious | Model: Hugging Face FLUX.1</p>
+      </div>
+
+      <div class="modal-body">
+        <!-- Before vs After Split View -->
+        <div class="before-after-container" id="ba-container">
+          <div class="ba-image ba-before">
+            <img id="ba-img-before" src="" alt="Original Room">
+            <span class="ba-label">Original Room</span>
+          </div>
+          <div class="ba-image ba-after">
+            <img id="ba-img-after" src="" alt="AI Redesign">
+            <span class="ba-label redesign-label">AI Redesign</span>
+          </div>
+          <!-- Slider Line -->
+          <div class="ba-slider-handle" id="ba-handle">
+            <i class="fa-solid fa-arrows-left-right"></i>
+          </div>
+        </div>
+
+        <div class="modal-details">
+          <h4><i class="fa-solid fa-terminal"></i> Hugging Face Prompt Used:</h4>
+          <p id="modal-prompt" class="prompt-code"></p>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <a id="btn-download-modal" href="#" download="ai_interior_redesign.jpg" class="btn-primary">
+          <i class="fa-solid fa-download"></i> Download High Res Image
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Dataset & Model Status -->
+  <div id="modal-train" class="modal hidden">
+    <div class="modal-backdrop" id="train-close-backdrop"></div>
+    <div class="modal-content modal-sm">
+      <button class="modal-close" id="train-close-btn">&times;</button>
+      <h3><i class="fa-solid fa-database"></i> Room Classifier Model & Dataset</h3>
+      <p>The PyTorch classifier is trained on room image datasets across 4 primary categories:</p>
+      <ul class="dataset-categories-list">
+        <li><i class="fa-solid fa-utensils"></i> Kitchen</li>
+        <li><i class="fa-solid fa-couch"></i> Living Room</li>
+        <li><i class="fa-solid fa-bath"></i> Bathroom</li>
+        <li><i class="fa-solid fa-bed"></i> Bedroom</li>
+      </ul>
+
+      <div class="status-info-box">
+        <p><strong>Status:</strong> <span class="status-active"><i class="fa-solid fa-circle-check"></i> Trained & Active</span></p>
+        <p><strong>Backbone:</strong> MobileNetV3 Small (PyTorch transfer learning)</p>
+        <p><strong>Image Generator:</strong> Hugging Face Inference API (Token Auth: OK)</p>
+      </div>
+
+      <button id="btn-trigger-retrain" class="btn-secondary w-full mt-4">
+        <i class="fa-solid fa-arrows-rotate"></i> Re-generate Dataset & Train Classifier
+      </button>
+      <div id="train-log" class="train-log hidden"></div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="/static/script.js"></script>
+</body>
+</html>
